@@ -7,3 +7,4 @@ export const workoutRouter = Router();
 
 workoutRouter.get('/', workoutController.getAllController);
 workoutRouter.get('/:id', workoutController.getController);
+workoutRouter.post('/', workoutController.postController);

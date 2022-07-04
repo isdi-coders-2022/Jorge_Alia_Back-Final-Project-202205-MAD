@@ -10,3 +10,4 @@ app.use(express.json());
 app.use(cors());
 
 app.use('/workout', workoutRouter);
+app.use('/workouts', workoutRouter);

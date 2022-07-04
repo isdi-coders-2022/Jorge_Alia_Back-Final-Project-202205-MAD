@@ -10,7 +10,7 @@ export interface iUser {
     name: string;
     email: string;
     passwd: string;
-    workout: Array<RelationField>;
+    workouts: Array<RelationField>;
     done: Array<RelationField>;
 }
 
@@ -18,7 +18,7 @@ const userSchema = new mongoose.Schema({
     name: { type: mongoose.SchemaTypes.String, required: true },
     email: mongoose.SchemaTypes.String,
     passwd: { type: mongoose.SchemaTypes.String, required: true },
-    workout: [
+    workouts: [
         {
             type: mongoose.SchemaTypes.ObjectId,
             ref: 'Workout',

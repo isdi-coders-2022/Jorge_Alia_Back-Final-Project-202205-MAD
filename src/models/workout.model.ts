@@ -34,7 +34,7 @@ const workoutSchema = new mongoose.Schema({
         default: false,
     },
     duration: { type: mongoose.SchemaTypes.Number, required: true },
-    intensity: { type: mongoose.SchemaTypes.Number, required: true },
+    intensity: { type: mongoose.SchemaTypes.String, required: true },
     comments: [
         {
             text: { type: mongoose.SchemaTypes.String },
