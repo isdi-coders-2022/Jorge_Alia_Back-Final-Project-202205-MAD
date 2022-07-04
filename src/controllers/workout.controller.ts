@@ -1,8 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
-import { BasicController } from './basic.controller';
+import { BasicController } from './basic.controller.js';
 import { Model } from 'mongoose';
 
-export class WorkoutControoler<T> extends BasicController<T> {
+export class WorkoutController<T> extends BasicController<T> {
     constructor(public model: Model<T>) {
         super(model);
     }
