@@ -12,7 +12,9 @@ export class UserController<T> extends BasicController<T> {
     getAllController = async (req: Request, resp: Response) => {
         req;
         resp.setHeader('Content-type', 'application/json');
-        resp.send(await this.model.find().populate('workouts'));
+        resp.send(
+            await this.model.find().populate('workouts').populate('done')
+        );
     };
 
     getController = async (
@@ -25,9 +27,7 @@ export class UserController<T> extends BasicController<T> {
         try {
             result = await this.model
                 .findById(req.params.id)
-                .populate('workouts', {
-                    responsible: 0,
-                });
+                .populate('workouts');
         } catch (error) {
             next(error);
             return;
