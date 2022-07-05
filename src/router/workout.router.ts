@@ -9,4 +9,14 @@ export const workoutRouter = Router();
 workoutRouter.get('/', workoutController.getAllController);
 workoutRouter.get('/:id', loginRequired, workoutController.getController);
 workoutRouter.post('/', workoutController.postController);
+workoutRouter.patch(
+    '/addComment/:id',
+    loginRequired,
+    workoutController.addCommentController
+);
+workoutRouter.patch(
+    '/deleteComment/:id',
+    loginRequired,
+    workoutController.deleteController
+);
 workoutRouter.patch('/:id', workoutController.patchController);

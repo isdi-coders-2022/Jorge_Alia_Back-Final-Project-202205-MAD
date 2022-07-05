@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from 'express';
 import { HydratedDocument, Model } from 'mongoose';
-import { iTokenPayload } from '../interfaces/token.js';
+import { ExtRequest, iTokenPayload } from '../interfaces/token.js';
 import { BasicController } from './basic.controller.js';
 import * as aut from '../services/authorization.js';
 
@@ -77,5 +77,49 @@ export class UserController<T> extends BasicController<T> {
         resp.setHeader('Content-type', 'application/json');
         resp.status(201);
         resp.send(JSON.stringify({ token, id: findUser.id }));
+    };
+    addWorkoutController = async (req: Request, resp: Response) => {
+        const idWorkout = req.params.id;
+        const { id } = (req as ExtRequest).tokenPayload;
+        const findUser: any = await this.model.findOne({ id });
+        findUser.workouts.push(idWorkout);
+        findUser.save();
+        resp.setHeader('Content-type', 'application/json');
+        resp.status(201);
+        resp.send(JSON.stringify(findUser));
+    };
+    deleteWorkoutController = async (req: Request, resp: Response) => {
+        const idWorkout = req.params.id;
+        const { id } = (req as ExtRequest).tokenPayload;
+        const findUser: any = await this.model.findOne({ id });
+        findUser.workouts = findUser.workouts.filter(
+            (item: any) => item.toString() !== idWorkout
+        );
+        findUser.save();
+        resp.setHeader('Content-type', 'application/json');
+        resp.status(201);
+        resp.send(JSON.stringify(findUser));
+    };
+    addDoneController = async (req: Request, resp: Response) => {
+        const idWorkout = req.params.id;
+        const { id } = (req as ExtRequest).tokenPayload;
+        const findUser: any = await this.model.findOne({ id });
+        findUser.done.push(idWorkout);
+        findUser.save();
+        resp.setHeader('Content-type', 'application/json');
+        resp.status(201);
+        resp.send(JSON.stringify(findUser));
+    };
+    deleteDoneController = async (req: Request, resp: Response) => {
+        const idWorkout = req.params.id;
+        const { id } = (req as ExtRequest).tokenPayload;
+        const findUser: any = await this.model.findOne({ id });
+        findUser.done = findUser.done.filter(
+            (item: any) => item.toString() !== idWorkout
+        );
+        findUser.save();
+        resp.setHeader('Content-type', 'application/json');
+        resp.status(201);
+        resp.send(JSON.stringify(findUser));
     };
 }
