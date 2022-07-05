@@ -12,6 +12,7 @@ export interface iUser {
     passwd: string;
     workouts: Array<RelationField>;
     done: Array<RelationField>;
+    rol: string;
 }
 
 const userSchema = new mongoose.Schema({
@@ -30,6 +31,11 @@ const userSchema = new mongoose.Schema({
             ref: 'Workout',
         },
     ],
+    rol: {
+        type: mongoose.SchemaTypes.String,
+        enum: ['Admin', 'User'],
+        default: 'User',
+    },
 });
 
 userSchema.set('toJSON', {
