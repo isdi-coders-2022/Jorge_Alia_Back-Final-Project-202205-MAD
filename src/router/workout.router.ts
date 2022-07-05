@@ -9,3 +9,4 @@ export const workoutRouter = Router();
 workoutRouter.get('/', workoutController.getAllController);
 workoutRouter.get('/:id', loginRequired, workoutController.getController);
 workoutRouter.post('/', workoutController.postController);
+workoutRouter.patch('/:id', workoutController.patchController);
