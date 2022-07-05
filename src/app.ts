@@ -3,6 +3,7 @@ import morgan from 'morgan';
 import cors from 'cors';
 import { workoutRouter } from './router/workout.router.js';
 import { userRouter } from './router/user.router.js';
+import { errorControl } from './middleware/error-control.js';
 
 export const app = express();
 
@@ -14,3 +15,5 @@ app.use('/workout', workoutRouter);
 app.use('/workouts', workoutRouter);
 app.use('/user', userRouter);
 app.use('/users', userRouter);
+
+app.use(errorControl);

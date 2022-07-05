@@ -109,12 +109,12 @@ describe('Given a instantiated controller UserController', () => {
         });
     });
 
-    describe('When method postController is called', () => {
+    describe('When method registerController is called', () => {
         test('Then if not error resp.send should be called with data', async () => {
             const mockResult = { test: 'test' };
             req = { body: { pwd: 'test' } };
             (mockModel.create as jest.Mock).mockResolvedValue(mockResult);
-            await controller.postController(
+            await controller.registerController(
                 req as Request,
                 resp as Response,
                 next as NextFunction
@@ -124,7 +124,7 @@ describe('Given a instantiated controller UserController', () => {
         test('Then if error next  should be called ', async () => {
             req = { body: { pwd: 'test' } };
             (mockModel.create as jest.Mock).mockRejectedValue(undefined);
-            await controller.postController(
+            await controller.registerController(
                 req as Request,
                 resp as Response,
                 next as NextFunction
