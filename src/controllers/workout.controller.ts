@@ -9,7 +9,16 @@ export class WorkoutController<T> extends BasicController<T> {
     getAllController = async (req: Request, resp: Response) => {
         req;
         resp.setHeader('Content-type', 'application/json');
-        resp.send(await this.model.find());
+        resp.send(
+            await this.model.find().populate({
+                path: 'comments',
+                populate: {
+                    path: 'user',
+                    model: 'User',
+                    select: { email: 0, workouts: 0, done: 0 },
+                },
+            })
+        );
     };
     getController = async (
         req: Request,

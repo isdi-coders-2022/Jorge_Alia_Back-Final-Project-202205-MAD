@@ -40,7 +40,7 @@ export class UserController<T> extends BasicController<T> {
         }
     };
 
-    postController = async (
+    registerController = async (
         req: Request,
         resp: Response,
         next: NextFunction
