@@ -42,29 +42,47 @@ export class WorkoutController<T> extends BasicController<T> {
             resp.send(JSON.stringify({}));
         }
     };
-    addCommentController = async (req: Request, resp: Response) => {
+    addCommentController = async (
+        req: Request,
+        resp: Response,
+        next: NextFunction
+    ) => {
         const idWorkout = req.params.id;
         const { id } = (req as ExtRequest).tokenPayload;
-        const { text, score } = req.body;
-        const findWorkout: any = await this.model.findOne({ id: idWorkout });
-        findWorkout.comments.push({ text, user: id, score: score });
-        findWorkout.save();
-        resp.setHeader('Content-type', 'application/json');
-        resp.status(201);
-        resp.send(JSON.stringify(findWorkout));
+        try {
+            const { text, score } = req.body;
+            const findWorkout: any = await this.model.findOne({
+                id: idWorkout,
+            });
+            if (findWorkout === null) {
+                next('UserError');
+            }
+            findWorkout.comments.push({ text, user: id, score: score });
+            findWorkout.save();
+            resp.setHeader('Content-type', 'application/json');
+            resp.status(201);
+            resp.send(JSON.stringify(findWorkout));
+        } catch (error) {
+            next('ValidationError');
+        }
     };
 
-    deleteCommentController = async (req: Request, resp: Response) => {
+    deleteCommentController = async (
+        req: Request,
+        resp: Response,
+        next: NextFunction
+    ) => {
         const idWorkout = req.params.id;
         const idComment = req.body.commentId;
+        const { id } = (req as ExtRequest).tokenPayload;
         const findWorkout = (await this.model.findOne({
             id: idWorkout,
         })) as HydratedDocument<iWorkout>;
-        if (!findWorkout) {
-            return;
+        if (findWorkout === null) {
+            next('UserError');
         }
         findWorkout.comments = findWorkout.comments.filter((item) => {
-            return item._id?.toString() !== idComment;
+            return item._id?.toString() !== idComment && id !== item.user;
         });
         findWorkout.save();
         resp.setHeader('Content-type', 'application/json');
