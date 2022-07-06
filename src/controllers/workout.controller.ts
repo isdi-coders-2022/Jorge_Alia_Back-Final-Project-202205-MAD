@@ -1,7 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
 import { BasicController } from './basic.controller.js';
-import { Model } from 'mongoose';
+import { HydratedDocument, Model } from 'mongoose';
 import { ExtRequest } from '../interfaces/token.js';
+import { iWorkout } from '../models/workout.model.js';
 
 export class WorkoutController<T> extends BasicController<T> {
     constructor(public model: Model<T>) {
@@ -16,7 +17,7 @@ export class WorkoutController<T> extends BasicController<T> {
                 populate: {
                     path: 'user',
                     model: 'User',
-                    select: { email: 0, workouts: 0, done: 0 },
+                    select: { email: 0, workouts: 0, done: 0, rol: 0 },
                 },
             })
         );
@@ -55,12 +56,16 @@ export class WorkoutController<T> extends BasicController<T> {
 
     deleteCommentController = async (req: Request, resp: Response) => {
         const idWorkout = req.params.id;
-        const { id } = (req as ExtRequest).tokenPayload;
-        const { text, score } = req.body;
-        const findWorkout: any = await this.model.findOne({ id: idWorkout });
-        findWorkout.comments = findWorkout.comments.filter(
-            (item: any) => item.toString() !== idWorkout
-        );
+        const idComment = req.body.commentId;
+        const findWorkout = (await this.model.findOne({
+            id: idWorkout,
+        })) as HydratedDocument<iWorkout>;
+        if (!findWorkout) {
+            return;
+        }
+        findWorkout.comments = findWorkout.comments.filter((item) => {
+            return item._id?.toString() !== idComment;
+        });
         findWorkout.save();
         resp.setHeader('Content-type', 'application/json');
         resp.status(201);

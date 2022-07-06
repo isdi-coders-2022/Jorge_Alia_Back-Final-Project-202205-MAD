@@ -16,7 +16,12 @@ export interface iWorkout {
     favorite: boolean;
     duration: number;
     intensity: string;
-    comments?: Array<{ text: string; user: string; score: number }>;
+    comments: Array<{
+        text: string;
+        user: string;
+        score: number;
+        _id?: string;
+    }>;
 }
 
 const workoutSchema = new mongoose.Schema({

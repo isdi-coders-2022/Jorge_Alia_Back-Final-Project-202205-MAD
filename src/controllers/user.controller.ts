@@ -78,7 +78,11 @@ export class UserController<T> extends BasicController<T> {
         resp.status(201);
         resp.send(JSON.stringify({ token, id: findUser.id }));
     };
-    addWorkoutController = async (req: Request, resp: Response) => {
+    addWorkoutController = async (
+        req: Request,
+        resp: Response,
+        next: NextFunction
+    ) => {
         const idWorkout = req.params.id;
         const { id } = (req as ExtRequest).tokenPayload;
         const findUser: any = await this.model.findOne({ id });

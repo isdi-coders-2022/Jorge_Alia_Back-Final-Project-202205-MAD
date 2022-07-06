@@ -7,26 +7,26 @@ export const userController = new UserController(User);
 export const userRouter = Router();
 
 userRouter.get('/', userController.getAllController);
-userRouter.get('/:id', userController.getController); // Poner loginRequired
+userRouter.get('/:id', loginRequired, userController.getController); // Poner loginRequired
 userRouter.post('/register', userController.registerController);
 userRouter.post('/login', userController.loginController);
 userRouter.patch(
-    '/addworkout/:id',
+    '/addtofavorites/:id',
     loginRequired,
     userController.addWorkoutController
 );
 userRouter.patch(
-    '/deleteworkout/:id',
+    '/deletefromfavorites/:id',
     loginRequired,
     userController.deleteWorkoutController
 );
 userRouter.patch(
-    '/adddone/:id',
+    '/addtodone/:id',
     loginRequired,
     userController.addDoneController
 );
 userRouter.patch(
-    '/deletedone/:id',
+    '/deletefromdone/:id',
     loginRequired,
     userController.deleteDoneController
 );
