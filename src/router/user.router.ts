@@ -7,7 +7,7 @@ export const userController = new UserController(User);
 export const userRouter = Router();
 
 userRouter.get('/', userController.getAllController);
-userRouter.get('/:id', loginRequired, userController.getController); // Poner loginRequired
+userRouter.get('/:id', loginRequired, userController.getController);
 userRouter.post('/register', userController.registerController);
 userRouter.post('/login', userController.loginController);
 userRouter.patch(

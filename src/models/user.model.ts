@@ -22,10 +22,14 @@ const userSchema = new mongoose.Schema({
     },
     email: {
         type: mongoose.SchemaTypes.String,
-        required: true,
         unique: true,
+        required: true,
     },
-    passwd: { type: mongoose.SchemaTypes.String, required: true },
+    passwd: {
+        type: mongoose.SchemaTypes.String,
+        required: [true, 'Password is a required field'],
+        minLength: 5,
+    },
     workouts: [
         {
             type: mongoose.SchemaTypes.ObjectId,
