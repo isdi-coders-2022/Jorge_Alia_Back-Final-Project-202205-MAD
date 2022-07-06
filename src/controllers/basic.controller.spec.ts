@@ -97,9 +97,25 @@ describe('Given a instantiated controller BasicController', () => {
             );
             await newController.patchController(
                 req as Request,
-                resp as Response
+                resp as Response,
+                next as NextFunction
             );
             expect(resp.send).toHaveBeenCalled();
+        });
+    });
+
+    describe('When method patchController is called with a null', () => {
+        test('Then next should be called', async () => {
+            const mockResult = null;
+            (mockItem.findByIdAndUpdate as jest.Mock).mockRejectedValue(
+                mockResult
+            );
+            await newController.patchController(
+                req as Request,
+                resp as Response,
+                next as NextFunction
+            );
+            expect(next).toHaveBeenCalled();
         });
     });
     describe('When method deleteController is called', () => {
@@ -110,7 +126,8 @@ describe('Given a instantiated controller BasicController', () => {
             );
             await newController.deleteController(
                 req as Request,
-                resp as Response
+                resp as Response,
+                next as NextFunction
             );
             expect(resp.send).toHaveBeenCalled();
         });
@@ -123,9 +140,24 @@ describe('Given a instantiated controller BasicController', () => {
             );
             await newController.deleteController(
                 req as Request,
-                resp as Response
+                resp as Response,
+                next as NextFunction
             );
             expect(resp.send).toHaveBeenCalled();
+        });
+    });
+    describe('When method deleteController is called with a null', () => {
+        test('Then next should be called', async () => {
+            const mockResult = null;
+            (mockItem.findByIdAndDelete as jest.Mock).mockRejectedValue(
+                mockResult
+            );
+            await newController.deleteController(
+                req as Request,
+                resp as Response,
+                next as NextFunction
+            );
+            expect(next).toHaveBeenCalled();
         });
     });
 });

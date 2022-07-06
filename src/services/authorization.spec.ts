@@ -21,12 +21,17 @@ describe('Given the module authorization', () => {
 
             expect(bcrypt.hash).toHaveBeenCalled();
         });
+        test('Then it should call bcrypt.hash', async () => {
+            bcrypt.hash = jest.fn().mockReturnValue({});
+            const result = await encrypt('');
+
+            expect(result).toBeUndefined();
+        });
     });
     describe('When compare is called', () => {
         test('Then it should call bcrypt.compare', async () => {
             bcrypt.compare = jest.fn().mockReturnValue(true);
-            await compare('test', '62c41172eb20556e8d48e754');
-
+            await compare('test', 'testing test');
             expect(bcrypt.compare).toHaveBeenCalled();
         });
         describe('When createToken is called', () => {

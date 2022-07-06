@@ -3,7 +3,7 @@ import morgan from 'morgan';
 import cors from 'cors';
 import { workoutRouter } from './router/workout.router.js';
 import { userRouter } from './router/user.router.js';
-import { errorControl } from './middleware/error-control.js';
+import { errorControl } from './middleware/error.control.js';
 
 export const app = express();
 

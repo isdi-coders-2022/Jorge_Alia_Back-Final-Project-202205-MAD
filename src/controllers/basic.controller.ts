@@ -41,27 +41,45 @@ export class BasicController<T> {
         }
     };
 
-    patchController = async (req: Request, resp: Response) => {
-        const newItem = await this.model.findByIdAndUpdate(
-            req.params.id,
-            req.body
-        );
-        resp.setHeader('Content-type', 'application/json');
-        resp.send(JSON.stringify(newItem));
+    patchController = async (
+        req: Request,
+        resp: Response,
+        next: NextFunction
+    ) => {
+        try {
+            const newItem = await this.model.findByIdAndUpdate(
+                req.params.id,
+                req.body
+            );
+            resp.setHeader('Content-type', 'application/json');
+            resp.send(JSON.stringify(newItem));
+        } catch (error) {
+            next(error);
+        }
     };
 
-    deleteController = async (req: Request, resp: Response) => {
-        const deleteItem = await this.model.findByIdAndDelete(req.params.id);
-        if (deleteItem === null) {
-            resp.status(404);
-            resp.send(
-                JSON.stringify({
-                    error: 'Delete impossible',
-                })
+    deleteController = async (
+        req: Request,
+        resp: Response,
+        next: NextFunction
+    ) => {
+        try {
+            const deleteItem = await this.model.findByIdAndDelete(
+                req.params.id
             );
-        } else {
-            resp.status(202);
-            resp.send(JSON.stringify(deleteItem));
+            if (deleteItem === null) {
+                resp.status(404);
+                resp.send(
+                    JSON.stringify({
+                        error: 'Delete impossible',
+                    })
+                );
+            } else {
+                resp.status(202);
+                resp.send(JSON.stringify(deleteItem));
+            }
+        } catch (error) {
+            next(error);
         }
     };
 }
