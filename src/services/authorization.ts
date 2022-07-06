@@ -5,6 +5,7 @@ import { iTokenPayload } from '../interfaces/token';
 dotenv.config();
 
 export const encrypt = async (source: string, salt = 10) => {
+    if (!source) return;
     return await bcrypt.hash(source, salt);
 };
 

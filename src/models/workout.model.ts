@@ -44,7 +44,7 @@ const workoutSchema = new mongoose.Schema({
         {
             text: { type: mongoose.SchemaTypes.String },
             user: { type: mongoose.Types.ObjectId, ref: 'User' },
-            score: { type: mongoose.SchemaTypes.Number },
+            score: { type: mongoose.SchemaTypes.Number, min: 1, max: 10 },
         },
     ],
 });

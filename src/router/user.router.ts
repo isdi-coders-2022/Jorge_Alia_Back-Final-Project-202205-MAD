@@ -1,13 +1,14 @@
 import { Router } from 'express';
 import { User } from '../models/user.model.js';
 import { UserController } from '../controllers/user.controller.js';
-import { loginRequired } from '../middleware/login-required.js';
+import { loginRequired } from '../middleware/login.required.js';
+import { userRequired } from '../middleware/user.required.js';
 
 export const userController = new UserController(User);
 export const userRouter = Router();
 
 userRouter.get('/', userController.getAllController);
-userRouter.get('/:id', loginRequired, userController.getController); // Poner loginRequired
+userRouter.get('/:id', loginRequired, userController.getController);
 userRouter.post('/register', userController.registerController);
 userRouter.post('/login', userController.loginController);
 userRouter.patch(
@@ -31,5 +32,15 @@ userRouter.patch(
     userController.deleteDoneController
 );
 
-userRouter.patch('/:id', loginRequired, userController.patchController);
-userRouter.delete('/:id', loginRequired, userController.deleteController);
+userRouter.patch(
+    '/:id',
+    loginRequired,
+    userRequired,
+    userController.patchController
+);
+userRouter.delete(
+    '/delete/:id',
+    loginRequired,
+    userRequired,
+    userController.deleteController
+);

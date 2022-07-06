@@ -6,6 +6,7 @@ const errors: { [key: string]: number } = {
     UserError: 404, // Not found
     UserAuthorizationError: 401, // Unauthorized
     TokenError: 401, // Unauthorized
+    RangeError: 406,
 };
 
 export const errorControl = (
