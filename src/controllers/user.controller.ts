@@ -62,7 +62,9 @@ export class UserController<T> extends BasicController<T> {
         resp: Response,
         next: NextFunction
     ) => {
-        const findUser: any = await this.model.findOne({ name: req.body.name });
+        const findUser: any = await this.model.findOne({
+            email: req.body.email,
+        });
         if (!findUser || !aut.compare(req.body.passwd, findUser.passwd)) {
             const error = new Error('Invalid user or password');
             error.name = 'UserAuthorizationError';
@@ -89,6 +91,7 @@ export class UserController<T> extends BasicController<T> {
         const findUser: any = await this.model.findOne({ id });
         if (findUser === null) {
             next('UserError');
+            return;
         }
         findUser.workouts.push(idWorkout);
         findUser.save();
@@ -106,6 +109,7 @@ export class UserController<T> extends BasicController<T> {
         const findUser: any = await this.model.findOne({ id });
         if (findUser === null) {
             next('UserError');
+            return;
         }
         findUser.workouts = findUser.workouts.filter(
             (item: any) => item.toString() !== idWorkout
@@ -125,6 +129,7 @@ export class UserController<T> extends BasicController<T> {
         const findUser: any = await this.model.findOne({ id });
         if (findUser === null) {
             next('UserError');
+            return;
         }
         findUser.done.push(idWorkout);
         findUser.save();
@@ -142,6 +147,7 @@ export class UserController<T> extends BasicController<T> {
         const findUser: any = await this.model.findOne({ id });
         if (findUser === null) {
             next('UserError');
+            return;
         }
         findUser.done = findUser.done.filter(
             (item: any) => item.toString() !== idWorkout

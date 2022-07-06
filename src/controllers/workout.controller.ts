@@ -83,6 +83,7 @@ export class WorkoutController<T> extends BasicController<T> {
 
         if (findWorkout === null) {
             next('UserError');
+            return;
         } else {
             findWorkout.comments = findWorkout.comments.filter((item: any) => {
                 return item._id?.toString() !== idComment && id !== item.user;

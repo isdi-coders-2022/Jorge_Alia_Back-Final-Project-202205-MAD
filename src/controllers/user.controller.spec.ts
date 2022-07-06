@@ -3,41 +3,56 @@ import mongoose from 'mongoose';
 import { UserController } from './user.controller.js';
 import bcryptjs from 'bcryptjs';
 import jwt from 'jsonwebtoken';
+import { ExtRequest } from '../interfaces/token.js';
 
 jest.mock('bcryptjs');
 jest.mock('jsonwebtoken');
 
 describe('Given a instantiated controller UserController', () => {
-    let req: Partial<Request>;
+    let req: Partial<ExtRequest>;
     let resp: Partial<Response>;
-    let next: NextFunction = jest.fn();
+    let next: NextFunction;
     let mockPopulate = jest.fn();
+
     let mockModel = {
         find: jest.fn().mockReturnValue({
             populate: mockPopulate.mockReturnValue({
                 populate: mockPopulate,
             }),
         }),
-        findOne: jest.fn(),
         findById: jest.fn().mockReturnValue({ populate: mockPopulate }),
         create: jest.fn(),
         findByIdAndUpdate: jest.fn(),
         findByIdAndDelete: jest.fn(),
+        findOne: jest.fn().mockResolvedValue({
+            workouts: [
+                {
+                    _id: '62c3fa970a6339f727766546',
+                },
+            ],
+            done: [{}],
+            save: jest.fn(),
+        }),
     };
     let controller = new UserController(
         mockModel as unknown as mongoose.Model<{}>
     );
-    bcryptjs.compare = jest.fn();
-    jwt.sign = jest.fn();
     beforeEach(() => {
         req = {
             params: { id: '62b5d4943bc55ff0124f6c1d' },
+            body: {
+                _id: '62c3fa970a6339f727766546',
+            },
+            tokenPayload: {
+                id: '62b9e534a202c8a096e0d7ba',
+            },
         };
         resp = {
             setHeader: jest.fn(),
             status: jest.fn(),
             send: jest.fn(),
         };
+        next = jest.fn();
     });
     describe('When method getAllController is called', () => {
         test('Then res.send should be called', async () => {
@@ -49,7 +64,7 @@ describe('Given a instantiated controller UserController', () => {
         test('Then resp.send should be called ', async () => {
             const mockResult = { id: 'test' };
             const mockedToken = 'test';
-            (mockModel.findOne as jest.Mock).mockResolvedValue(mockResult);
+            (mockModel.findOne as jest.Mock).mockResolvedValueOnce(mockResult);
             (bcryptjs.compare as jest.Mock).mockResolvedValue(true);
             (jwt.sign as jest.Mock).mockResolvedValue(mockedToken);
             req = { body: { name: 'test' } };
@@ -62,8 +77,8 @@ describe('Given a instantiated controller UserController', () => {
         });
         test('Then resp.send should be called ', async () => {
             const mockedToken = 'test';
-            (mockModel.findOne as jest.Mock).mockResolvedValue(undefined);
-            (bcryptjs.compare as jest.Mock).mockRejectedValue(undefined);
+            (mockModel.findOne as jest.Mock).mockResolvedValueOnce(undefined);
+            (bcryptjs.compare as jest.Mock).mockRejectedValueOnce(undefined);
             (jwt.sign as jest.Mock).mockResolvedValue(mockedToken);
             req = { body: { name: 'test' } };
             await controller.loginController(
@@ -88,7 +103,7 @@ describe('Given a instantiated controller UserController', () => {
         });
         test('And response is not ok, then resp.send should be called without data', async () => {
             const mockResult = null;
-            (mockPopulate as jest.Mock).mockResolvedValue(mockResult);
+            (mockPopulate as jest.Mock).mockResolvedValueOnce(mockResult);
             await controller.getController(
                 req as Request,
                 resp as Response,
@@ -99,7 +114,7 @@ describe('Given a instantiated controller UserController', () => {
         });
         test('And response is not ok, then next should be called', async () => {
             const mockResult = null;
-            (mockPopulate as jest.Mock).mockRejectedValue(mockResult);
+            (mockPopulate as jest.Mock).mockRejectedValueOnce(mockResult);
             await controller.getController(
                 req as Request,
                 resp as Response,
@@ -113,7 +128,7 @@ describe('Given a instantiated controller UserController', () => {
         test('Then if not error resp.send should be called with data', async () => {
             const mockResult = { test: 'test' };
             req = { body: { pwd: 'test' } };
-            (mockModel.create as jest.Mock).mockResolvedValue(mockResult);
+            (mockModel.create as jest.Mock).mockResolvedValueOnce(mockResult);
             await controller.registerController(
                 req as Request,
                 resp as Response,
@@ -123,8 +138,84 @@ describe('Given a instantiated controller UserController', () => {
         });
         test('Then if error next  should be called ', async () => {
             req = { body: { pwd: 'test' } };
-            (mockModel.create as jest.Mock).mockRejectedValue(undefined);
+            (mockModel.create as jest.Mock).mockRejectedValueOnce(undefined);
             await controller.registerController(
+                req as Request,
+                resp as Response,
+                next as NextFunction
+            );
+            expect(next).toHaveBeenCalled();
+        });
+    });
+    describe('When method addWorkoutController is called', () => {
+        test('And response is ok, then resp.send should be called', async () => {
+            await controller.addWorkoutController(
+                req as Request,
+                resp as Response,
+                next as NextFunction
+            );
+            expect(resp.send).toHaveBeenCalled();
+        });
+        test('And response is not ok, then next should be called', async () => {
+            mockModel.findOne.mockResolvedValueOnce(null);
+            await controller.addWorkoutController(
+                req as Request,
+                resp as Response,
+                next as NextFunction
+            );
+            expect(next).toHaveBeenCalled();
+        });
+    });
+    describe('When method deleteWorkoutController is called', () => {
+        test('And response is ok, then resp.send should be called', async () => {
+            await controller.deleteWorkoutController(
+                req as Request,
+                resp as Response,
+                next as NextFunction
+            );
+            expect(resp.send).toHaveBeenCalled();
+        });
+        test('And response is not ok, then next should be called', async () => {
+            mockModel.findOne.mockResolvedValueOnce(null);
+            await controller.deleteWorkoutController(
+                req as Request,
+                resp as Response,
+                next as NextFunction
+            );
+            expect(next).toHaveBeenCalled();
+        });
+    });
+    describe('When method addDoneController is called', () => {
+        test('And response is ok, then resp.send should be called', async () => {
+            await controller.addDoneController(
+                req as Request,
+                resp as Response,
+                next as NextFunction
+            );
+            expect(resp.send).toHaveBeenCalled();
+        });
+        test('And response is not ok, then next should be called', async () => {
+            mockModel.findOne.mockResolvedValueOnce(null);
+            await controller.addDoneController(
+                req as Request,
+                resp as Response,
+                next as NextFunction
+            );
+            expect(next).toHaveBeenCalled();
+        });
+    });
+    describe('When method deleteDoneController is called', () => {
+        test('And response is ok, then resp.send should be called', async () => {
+            await controller.deleteDoneController(
+                req as Request,
+                resp as Response,
+                next as NextFunction
+            );
+            expect(resp.send).toHaveBeenCalled();
+        });
+        test('And response is not ok, then next should be called', async () => {
+            mockModel.findOne.mockResolvedValueOnce(null);
+            await controller.deleteDoneController(
                 req as Request,
                 resp as Response,
                 next as NextFunction

@@ -16,7 +16,7 @@ describe('Given a instantiated controller WorkoutController', () => {
         findOne: jest.fn().mockResolvedValue({
             comments: [
                 {
-                    text: 'Comment tes',
+                    text: 'Comment test',
                     user: '62c31e157e6d3bb95caded9a',
                     _id: '62c5659c245f7c999e3b5a3c',
                 },
@@ -93,21 +93,36 @@ describe('Given a instantiated controller WorkoutController', () => {
             );
             expect(resp.send).toHaveBeenCalled();
         });
+        test('And response is not ok, then next should be called', async () => {
+            mockModel.findOne = jest.fn().mockRejectedValueOnce(null);
+            await controller.addCommentController(
+                req as Request,
+                resp as Response,
+                next as NextFunction
+            );
+            expect(next).toHaveBeenCalled();
+        });
+        test('And response is not ok, then next should be called', async () => {
+            mockModel.findOne.mockResolvedValueOnce(null);
+            await controller.addCommentController(
+                req as Request,
+                resp as Response,
+                next as NextFunction
+            );
+            expect(next).toHaveBeenCalled();
+        });
     });
 
-    test('And response is not ok, then next should be called', async () => {
-        mockModel.findOne = jest.fn().mockRejectedValueOnce(null);
-        await controller.addCommentController(
-            req as Request,
-            resp as Response,
-            next as NextFunction
-        );
-        expect(next).toHaveBeenCalled();
-    });
     describe('When method deleteCommentController is called', () => {
         test('And response is ok, then resp.send should be called', async () => {
             mockModel.findOne.mockResolvedValueOnce({
-                comments: [],
+                comments: [
+                    {
+                        text: 'Comment tes',
+                        user: '62c31e157e6d3bb95caded9a',
+                        _id: '62c5659c245f7c999e3b5a3c',
+                    },
+                ],
                 save: jest.fn(),
             });
             await controller.deleteCommentController(
@@ -116,6 +131,15 @@ describe('Given a instantiated controller WorkoutController', () => {
                 next as NextFunction
             );
             expect(resp.send).toHaveBeenCalled();
+        });
+        test('And response is not ok, then next should be called', async () => {
+            mockModel.findOne.mockResolvedValueOnce(null);
+            await controller.deleteCommentController(
+                req as Request,
+                resp as Response,
+                next as NextFunction
+            );
+            expect(next).toHaveBeenCalled();
         });
     });
 });
