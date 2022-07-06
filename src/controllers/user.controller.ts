@@ -85,17 +85,28 @@ export class UserController<T> extends BasicController<T> {
     ) => {
         const idWorkout = req.params.id;
         const { id } = (req as ExtRequest).tokenPayload;
+
         const findUser: any = await this.model.findOne({ id });
+        if (findUser === null) {
+            next('UserError');
+        }
         findUser.workouts.push(idWorkout);
         findUser.save();
         resp.setHeader('Content-type', 'application/json');
         resp.status(201);
         resp.send(JSON.stringify(findUser));
     };
-    deleteWorkoutController = async (req: Request, resp: Response) => {
+    deleteWorkoutController = async (
+        req: Request,
+        resp: Response,
+        next: NextFunction
+    ) => {
         const idWorkout = req.params.id;
         const { id } = (req as ExtRequest).tokenPayload;
         const findUser: any = await this.model.findOne({ id });
+        if (findUser === null) {
+            next('UserError');
+        }
         findUser.workouts = findUser.workouts.filter(
             (item: any) => item.toString() !== idWorkout
         );
@@ -104,20 +115,34 @@ export class UserController<T> extends BasicController<T> {
         resp.status(201);
         resp.send(JSON.stringify(findUser));
     };
-    addDoneController = async (req: Request, resp: Response) => {
+    addDoneController = async (
+        req: Request,
+        resp: Response,
+        next: NextFunction
+    ) => {
         const idWorkout = req.params.id;
         const { id } = (req as ExtRequest).tokenPayload;
         const findUser: any = await this.model.findOne({ id });
+        if (findUser === null) {
+            next('UserError');
+        }
         findUser.done.push(idWorkout);
         findUser.save();
         resp.setHeader('Content-type', 'application/json');
         resp.status(201);
         resp.send(JSON.stringify(findUser));
     };
-    deleteDoneController = async (req: Request, resp: Response) => {
+    deleteDoneController = async (
+        req: Request,
+        resp: Response,
+        next: NextFunction
+    ) => {
         const idWorkout = req.params.id;
         const { id } = (req as ExtRequest).tokenPayload;
         const findUser: any = await this.model.findOne({ id });
+        if (findUser === null) {
+            next('UserError');
+        }
         findUser.done = findUser.done.filter(
             (item: any) => item.toString() !== idWorkout
         );

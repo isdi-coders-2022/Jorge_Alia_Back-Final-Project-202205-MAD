@@ -2,6 +2,7 @@ import { NextFunction, Request, Response } from 'express';
 import { WorkoutController } from './workout.controller';
 import mongoose from 'mongoose';
 import { ExtRequest } from '../interfaces/token';
+import { iWorkout } from '../models/workout.model';
 
 describe('Given a instantiated controller WorkoutController', () => {
     let req: Partial<ExtRequest>;
@@ -12,7 +13,16 @@ describe('Given a instantiated controller WorkoutController', () => {
         find: jest.fn().mockReturnValue({ populate: jest.fn() }),
         findById: jest.fn().mockReturnValue({ populate: jest.fn() }),
         create: jest.fn(),
-        findOne: jest.fn().mockReturnValue({ comments: [], save: jest.fn() }),
+        findOne: jest.fn().mockResolvedValue({
+            comments: [
+                {
+                    text: 'Comment tes',
+                    user: '62c31e157e6d3bb95caded9a',
+                    _id: '62c5659c245f7c999e3b5a3c',
+                },
+            ],
+            save: jest.fn(),
+        } as unknown as mongoose.HydratedDocument<iWorkout>),
     };
     let controller = new WorkoutController(
         mockModel as unknown as mongoose.Model<{}>
@@ -86,12 +96,26 @@ describe('Given a instantiated controller WorkoutController', () => {
     });
 
     test('And response is not ok, then next should be called', async () => {
-        mockModel.findOne = jest.fn().mockRejectedValue(null);
+        mockModel.findOne = jest.fn().mockRejectedValueOnce(null);
         await controller.addCommentController(
             req as Request,
             resp as Response,
             next as NextFunction
         );
         expect(next).toHaveBeenCalled();
+    });
+    describe('When method deleteCommentController is called', () => {
+        test('And response is ok, then resp.send should be called', async () => {
+            mockModel.findOne.mockResolvedValueOnce({
+                comments: [],
+                save: jest.fn(),
+            });
+            await controller.deleteCommentController(
+                req as Request,
+                resp as Response,
+                next as NextFunction
+            );
+            expect(resp.send).toHaveBeenCalled();
+        });
     });
 });

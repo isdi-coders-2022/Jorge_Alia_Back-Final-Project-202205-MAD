@@ -75,18 +75,22 @@ export class WorkoutController<T> extends BasicController<T> {
         const idWorkout = req.params.id;
         const idComment = req.body.commentId;
         const { id } = (req as ExtRequest).tokenPayload;
-        const findWorkout = (await this.model.findOne({
-            id: idWorkout,
-        })) as HydratedDocument<iWorkout>;
+
+        const findWorkout: HydratedDocument<iWorkout> =
+            (await this.model.findOne({
+                id: idWorkout,
+            })) as HydratedDocument<iWorkout>;
+
         if (findWorkout === null) {
             next('UserError');
+        } else {
+            findWorkout.comments = findWorkout.comments.filter((item: any) => {
+                return item._id?.toString() !== idComment && id !== item.user;
+            });
+            findWorkout.save();
+            resp.setHeader('Content-type', 'application/json');
+            resp.status(201);
+            resp.send(JSON.stringify(findWorkout));
         }
-        findWorkout.comments = findWorkout.comments.filter((item) => {
-            return item._id?.toString() !== idComment && id !== item.user;
-        });
-        findWorkout.save();
-        resp.setHeader('Content-type', 'application/json');
-        resp.status(201);
-        resp.send(JSON.stringify(findWorkout));
     };
 }
