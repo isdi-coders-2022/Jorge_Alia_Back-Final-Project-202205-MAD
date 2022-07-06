@@ -8,5 +8,18 @@ export const workoutRouter = Router();
 
 workoutRouter.get('/', workoutController.getAllController);
 workoutRouter.get('/:id', loginRequired, workoutController.getController);
-workoutRouter.post('/', workoutController.postController);
-workoutRouter.patch('/:id', workoutController.patchController);
+
+workoutRouter.patch(
+    '/addcomment/:id',
+    loginRequired,
+    workoutController.addCommentController
+);
+workoutRouter.patch(
+    '/deletecomment/:id',
+    loginRequired,
+    workoutController.deleteCommentController
+);
+
+// CREAR Y ACTUALIZAR WORKOUT QUE NO VOY A DAR OPCIÓN AL USUARIO PERO MIENTRAS DESRROLLO LOS PUEDO NECESITAR
+// workoutRouter.patch('/:id', workoutController.patchController);
+// workoutRouter.post('/', workoutController.postController);

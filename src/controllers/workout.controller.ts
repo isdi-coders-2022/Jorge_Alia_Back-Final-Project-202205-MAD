@@ -1,6 +1,8 @@
 import { NextFunction, Request, Response } from 'express';
 import { BasicController } from './basic.controller.js';
-import { Model } from 'mongoose';
+import { HydratedDocument, Model } from 'mongoose';
+import { ExtRequest } from '../interfaces/token.js';
+import { iWorkout } from '../models/workout.model.js';
 
 export class WorkoutController<T> extends BasicController<T> {
     constructor(public model: Model<T>) {
@@ -15,7 +17,7 @@ export class WorkoutController<T> extends BasicController<T> {
                 populate: {
                     path: 'user',
                     model: 'User',
-                    select: { email: 0, workouts: 0, done: 0 },
+                    select: { email: 0, workouts: 0, done: 0, rol: 0 },
                 },
             })
         );
@@ -38,6 +40,58 @@ export class WorkoutController<T> extends BasicController<T> {
         } else {
             resp.status(404);
             resp.send(JSON.stringify({}));
+        }
+    };
+    addCommentController = async (
+        req: Request,
+        resp: Response,
+        next: NextFunction
+    ) => {
+        const idWorkout = req.params.id;
+        const { id } = (req as ExtRequest).tokenPayload;
+        try {
+            const { text, score } = req.body;
+            const findWorkout: any = await this.model.findOne({
+                id: idWorkout,
+            });
+            if (findWorkout === null) {
+                next('UserError');
+            }
+            findWorkout.comments.push({ text, user: id, score: score });
+            findWorkout.save();
+            resp.setHeader('Content-type', 'application/json');
+            resp.status(201);
+            resp.send(JSON.stringify(findWorkout));
+        } catch (error) {
+            next('ValidationError');
+        }
+    };
+
+    deleteCommentController = async (
+        req: Request,
+        resp: Response,
+        next: NextFunction
+    ) => {
+        const idWorkout = req.params.id;
+        const idComment = req.body.commentId;
+        const { id } = (req as ExtRequest).tokenPayload;
+
+        const findWorkout: HydratedDocument<iWorkout> =
+            (await this.model.findOne({
+                id: idWorkout,
+            })) as HydratedDocument<iWorkout>;
+
+        if (findWorkout === null) {
+            next('UserError');
+            return;
+        } else {
+            findWorkout.comments = findWorkout.comments.filter((item: any) => {
+                return item._id?.toString() !== idComment && id !== item.user;
+            });
+            findWorkout.save();
+            resp.setHeader('Content-type', 'application/json');
+            resp.status(201);
+            resp.send(JSON.stringify(findWorkout));
         }
     };
 }

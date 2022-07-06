@@ -12,11 +12,19 @@ export interface iUser {
     passwd: string;
     workouts: Array<RelationField>;
     done: Array<RelationField>;
+    rol: string;
 }
 
 const userSchema = new mongoose.Schema({
-    name: { type: mongoose.SchemaTypes.String, required: true },
-    email: mongoose.SchemaTypes.String,
+    name: {
+        type: mongoose.SchemaTypes.String,
+        required: true,
+    },
+    email: {
+        type: mongoose.SchemaTypes.String,
+        required: true,
+        unique: true,
+    },
     passwd: { type: mongoose.SchemaTypes.String, required: true },
     workouts: [
         {
@@ -30,6 +38,11 @@ const userSchema = new mongoose.Schema({
             ref: 'Workout',
         },
     ],
+    rol: {
+        type: mongoose.SchemaTypes.String,
+        enum: ['Admin', 'User'],
+        default: 'User',
+    },
 });
 
 userSchema.set('toJSON', {
