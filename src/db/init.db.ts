@@ -1,5 +1,5 @@
 import { iUser, User } from '../models/user.model';
-import { iWorkout } from '../models/workout.model';
+import { iWorkout, Workout } from '../models/workout.model';
 import { encrypt } from '../services/authorization';
 import { mongooseConnect } from './mongoose';
 
@@ -7,7 +7,7 @@ let aUsers: Array<iUser> = [
     {
         name: 'Ango',
         email: 'ango@gmail.com',
-        passwd: '1234',
+        passwd: '123456',
         workouts: [],
         done: [],
         rol: 'User',
@@ -15,7 +15,7 @@ let aUsers: Array<iUser> = [
     {
         name: 'Sergio',
         email: 'sergio@gmail.com',
-        passwd: '1234',
+        passwd: '123456',
         workouts: [],
         done: [],
         rol: 'User',
@@ -63,23 +63,27 @@ const aWorkouts: Array<iWorkout> = [
 
 export const initDB = async () => {
     const connect = await mongooseConnect();
-    (aUsers as any) = await Promise.all(
+    User.collection.drop();
+    Workout.collection.drop();
+    User.deleteMany({});
+    Workout.deleteMany({});
+    const userArray = await Promise.all(
         aUsers.map(async (item) => ({
             ...item,
             passwd: await encrypt(item.passwd),
         }))
     );
 
-    const users = await User.insertMany(aUsers);
-    aWorkouts[0].comments[0].user = users[0].id;
-    aWorkouts[1].comments[1].user = users[1].id;
+    const users = await User.insertMany(userArray);
+    (aWorkouts[0].comments[0].user as any) = users[0]._id;
+    (aWorkouts[1].comments[0].user as any) = users[1]._id;
 
-    const workout = await User.insertMany(aWorkouts);
-    (aUsers[0].workouts[0] as any) = aWorkouts[0]._id;
-    (aUsers[1].workouts[1] as any) = aWorkouts[1]._id;
+    const workout = await Workout.insertMany(aWorkouts);
+    (aUsers[0].workouts[0] as any) = workout[0]._id;
+    (aUsers[1].workouts[1] as any) = workout[1]._id;
 
-    (aUsers[0].done[0] as any) = aWorkouts[0]._id;
-    (aUsers[1].done[1] as any) = aWorkouts[1]._id;
+    (aUsers[0].done[0] as any) = workout[0]._id;
+    (aUsers[1].done[1] as any) = workout[1]._id;
 
     connect.disconnect();
     return {

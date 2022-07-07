@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 import mongoose from 'mongoose';
 import { mongooseConnect } from '../db/mongoose.js';
 
@@ -18,7 +19,7 @@ export interface iWorkout {
     intensity: string;
     comments: Array<{
         text: string;
-        user?: string;
+        user: string;
         score: number;
         _id?: string;
     }>;

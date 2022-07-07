@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 import mongoose from 'mongoose';
 import { mongooseConnect, RelationField } from '../db/mongoose.js';
 
@@ -22,12 +23,12 @@ const userSchema = new mongoose.Schema({
     },
     email: {
         type: mongoose.SchemaTypes.String,
-        unique: true,
         required: true,
+        unique: true,
     },
     passwd: {
         type: mongoose.SchemaTypes.String,
-        required: [true, 'Password is a required field'],
+        required: true,
         minLength: 5,
     },
     workouts: [

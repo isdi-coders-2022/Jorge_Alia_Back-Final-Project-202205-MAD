@@ -53,7 +53,7 @@ export class UserController<T> extends BasicController<T> {
             resp.status(201);
             resp.send(JSON.stringify(newItem));
         } catch (error) {
-            next(error);
+            next(RangeError);
         }
     };
     loginController = async (
