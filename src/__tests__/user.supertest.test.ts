@@ -70,11 +70,59 @@ describe('Given the routes of workout', () => {
         });
     });
     describe('When method POST is used in "/user/addtofavorites/', () => {
-        test('Then status should be 201', async () => {
+        test('If I am logged, then status should be 201', async () => {
             const response = await request(app)
                 .patch(`/user/addtofavorites/${data.workout[0].id}`)
                 .set('Authorization', 'Bearer ' + token);
             expect(response.statusCode).toBe(201);
+        });
+        test('If I am not logged, then status should be 401', async () => {
+            const response = await request(app).patch(
+                `/user/addtofavorites/${data.workout[0].id}`
+            );
+            expect(response.statusCode).toBe(401);
+        });
+    });
+    describe('When method POST is used in "/user/deletefromfavorites/', () => {
+        test('If I am logged, then status should be 201', async () => {
+            const response = await request(app)
+                .patch(`/user/deletefromfavorites/${data.workout[0].id}`)
+                .set('Authorization', 'Bearer ' + token);
+            expect(response.statusCode).toBe(201);
+        });
+        test('If I am not logged, then status should be 401', async () => {
+            const response = await request(app).patch(
+                `/user/deletefromfavorites/${data.workout[0].id}`
+            );
+            expect(response.statusCode).toBe(401);
+        });
+    });
+    describe('When method POST is used in "/user/addtodone/', () => {
+        test('If I am logged, then status should be 201', async () => {
+            const response = await request(app)
+                .patch(`/user/addtodone/${data.workout[0].id}`)
+                .set('Authorization', 'Bearer ' + token);
+            expect(response.statusCode).toBe(201);
+        });
+        test('If I am not logged, then status should be 401', async () => {
+            const response = await request(app).patch(
+                `/user/addtodone/${data.workout[0].id}`
+            );
+            expect(response.statusCode).toBe(401);
+        });
+    });
+    describe('When method POST is used in "/user/deletefromdone/', () => {
+        test('If I am logged, then status should be 201', async () => {
+            const response = await request(app)
+                .patch(`/user/deletefromdone/${data.workout[0].id}`)
+                .set('Authorization', 'Bearer ' + token);
+            expect(response.statusCode).toBe(201);
+        });
+        test('If I am not logged, then status should be 401', async () => {
+            const response = await request(app).patch(
+                `/user/deletefromdone/${data.workout[0].id}`
+            );
+            expect(response.statusCode).toBe(401);
         });
     });
 });
