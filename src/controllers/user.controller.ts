@@ -110,7 +110,9 @@ export class UserController<T> extends BasicController<T> {
     ) => {
         const idWorkout = req.params.id;
         const { id } = (req as ExtRequest).tokenPayload;
-        const findUser: any = await this.model.findOne({ id });
+        const findUser: HydratedDocument<iUser> = (await this.model.findOne({
+            id,
+        })) as HydratedDocument<iUser>;
         if (findUser === null) {
             next('UserError');
             return;
@@ -130,7 +132,9 @@ export class UserController<T> extends BasicController<T> {
     ) => {
         const idWorkout = req.params.id;
         const { id } = (req as ExtRequest).tokenPayload;
-        const findUser: any = await this.model.findOne({ id });
+        const findUser: HydratedDocument<iUser> = (await this.model.findOne({
+            id,
+        })) as HydratedDocument<iUser>;
         if (findUser === null) {
             next('UserError');
             return;
@@ -148,7 +152,9 @@ export class UserController<T> extends BasicController<T> {
     ) => {
         const idWorkout = req.params.id;
         const { id } = (req as ExtRequest).tokenPayload;
-        const findUser: any = await this.model.findOne({ id });
+        const findUser: HydratedDocument<iUser> = (await this.model.findOne({
+            id,
+        })) as HydratedDocument<iUser>;
         if (findUser === null) {
             next('UserError');
             return;

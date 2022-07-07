@@ -69,7 +69,7 @@ describe('Given the routes of workout', () => {
             expect(response.statusCode).toBe(201);
         });
     });
-    describe('When method POST is used in "/user/addtofavorites/', () => {
+    describe('When method PATCH is used in "/user/addtofavorites/', () => {
         test('If I am logged, then status should be 201', async () => {
             const response = await request(app)
                 .patch(`/user/addtofavorites/${data.workout[0].id}`)
@@ -83,7 +83,7 @@ describe('Given the routes of workout', () => {
             expect(response.statusCode).toBe(401);
         });
     });
-    describe('When method POST is used in "/user/deletefromfavorites/', () => {
+    describe('When method PATCH is used in "/user/deletefromfavorites/', () => {
         test('If I am logged, then status should be 201', async () => {
             const response = await request(app)
                 .patch(`/user/deletefromfavorites/${data.workout[0].id}`)
@@ -97,7 +97,7 @@ describe('Given the routes of workout', () => {
             expect(response.statusCode).toBe(401);
         });
     });
-    describe('When method POST is used in "/user/addtodone/', () => {
+    describe('When method PATCH is used in "/user/addtodone/', () => {
         test('If I am logged, then status should be 201', async () => {
             const response = await request(app)
                 .patch(`/user/addtodone/${data.workout[0].id}`)
@@ -111,7 +111,7 @@ describe('Given the routes of workout', () => {
             expect(response.statusCode).toBe(401);
         });
     });
-    describe('When method POST is used in "/user/deletefromdone/', () => {
+    describe('When method PATCH is used in "/user/deletefromdone/', () => {
         test('If I am logged, then status should be 201', async () => {
             const response = await request(app)
                 .patch(`/user/deletefromdone/${data.workout[0].id}`)
