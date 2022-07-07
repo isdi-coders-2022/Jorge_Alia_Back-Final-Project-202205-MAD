@@ -1,6 +1,6 @@
 /* istanbul ignore file */
 import mongoose from 'mongoose';
-import { mongooseConnect, RelationField } from '../db/mongoose.js';
+import { mongooseConnect } from '../db/mongoose.js';
 
 (async () => {
     await mongooseConnect();
@@ -11,8 +11,8 @@ export interface iUser {
     name: string;
     email: string;
     passwd: string;
-    workouts: Array<RelationField>;
-    done: Array<RelationField>;
+    workouts: Array<string>;
+    done: Array<string>;
     rol: string;
 }
 
