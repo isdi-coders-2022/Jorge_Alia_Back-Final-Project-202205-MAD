@@ -18,7 +18,7 @@ export interface iWorkout {
     intensity: string;
     comments: Array<{
         text: string;
-        user: string;
+        user?: string;
         score: number;
         _id?: string;
     }>;
