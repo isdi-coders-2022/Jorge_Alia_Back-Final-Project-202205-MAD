@@ -51,9 +51,10 @@ export class WorkoutController<T> extends BasicController<T> {
         const { id } = (req as ExtRequest).tokenPayload;
         try {
             const { text, score } = req.body;
-            const findWorkout: any = await this.model.findOne({
-                id: idWorkout,
-            });
+            const findWorkout: HydratedDocument<iWorkout> =
+                (await this.model.findOne({
+                    id: idWorkout,
+                })) as HydratedDocument<iWorkout>;
             if (findWorkout === null) {
                 next('UserError');
             }

@@ -1,3 +1,4 @@
+/* istanbul ignore file */
 import http from 'http';
 import { AddressInfo } from 'net';
 import { app } from './app.js';

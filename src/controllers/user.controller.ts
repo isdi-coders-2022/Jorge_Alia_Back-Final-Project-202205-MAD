@@ -3,6 +3,7 @@ import { HydratedDocument, Model } from 'mongoose';
 import { ExtRequest, iTokenPayload } from '../interfaces/token.js';
 import { BasicController } from './basic.controller.js';
 import * as aut from '../services/authorization.js';
+import { iUser } from '../models/user.model.js';
 
 export class UserController<T> extends BasicController<T> {
     constructor(public model: Model<T>) {
@@ -53,7 +54,7 @@ export class UserController<T> extends BasicController<T> {
             resp.status(201);
             resp.send(JSON.stringify(newItem));
         } catch (error) {
-            next(error);
+            next(RangeError);
         }
     };
     loginController = async (
@@ -87,11 +88,15 @@ export class UserController<T> extends BasicController<T> {
         const idWorkout = req.params.id;
         const { id } = (req as ExtRequest).tokenPayload;
 
-        const findUser: any = await this.model.findOne({ id });
+        const findUser: HydratedDocument<iUser> = (await this.model.findOne({
+            id,
+        })) as HydratedDocument<iUser>;
         if (findUser === null) {
             next('UserError');
             return;
         }
+        // COMPROBAR QUE EXISTE EL WORKOUT
+        //COMPROBAR SI YA LO TIENE
         findUser.workouts.push(idWorkout);
         findUser.save();
         resp.setHeader('Content-type', 'application/json');
@@ -105,7 +110,9 @@ export class UserController<T> extends BasicController<T> {
     ) => {
         const idWorkout = req.params.id;
         const { id } = (req as ExtRequest).tokenPayload;
-        const findUser: any = await this.model.findOne({ id });
+        const findUser: HydratedDocument<iUser> = (await this.model.findOne({
+            id,
+        })) as HydratedDocument<iUser>;
         if (findUser === null) {
             next('UserError');
             return;
@@ -125,7 +132,9 @@ export class UserController<T> extends BasicController<T> {
     ) => {
         const idWorkout = req.params.id;
         const { id } = (req as ExtRequest).tokenPayload;
-        const findUser: any = await this.model.findOne({ id });
+        const findUser: HydratedDocument<iUser> = (await this.model.findOne({
+            id,
+        })) as HydratedDocument<iUser>;
         if (findUser === null) {
             next('UserError');
             return;
@@ -143,7 +152,9 @@ export class UserController<T> extends BasicController<T> {
     ) => {
         const idWorkout = req.params.id;
         const { id } = (req as ExtRequest).tokenPayload;
-        const findUser: any = await this.model.findOne({ id });
+        const findUser: HydratedDocument<iUser> = (await this.model.findOne({
+            id,
+        })) as HydratedDocument<iUser>;
         if (findUser === null) {
             next('UserError');
             return;
