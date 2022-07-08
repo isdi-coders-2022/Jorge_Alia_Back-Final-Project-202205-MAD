@@ -165,6 +165,15 @@ describe('Given a instantiated controller UserController', () => {
             );
             expect(next).toHaveBeenCalled();
         });
+        test('Next it should be called, when Workout already added to favorites ', async () => {
+            await controller.addWorkoutController(
+                req as Request,
+                resp as Response,
+                next as NextFunction
+            );
+
+            expect(next).toHaveBeenCalled();
+        });
     });
     describe('When method deleteWorkoutController is called', () => {
         test('And response is ok, then resp.send should be called', async () => {
@@ -201,6 +210,15 @@ describe('Given a instantiated controller UserController', () => {
                 resp as Response,
                 next as NextFunction
             );
+            expect(next).toHaveBeenCalled();
+        });
+        test('Next it should be called, when Workout already added to done ', async () => {
+            await controller.addDoneController(
+                req as Request,
+                resp as Response,
+                next as NextFunction
+            );
+
             expect(next).toHaveBeenCalled();
         });
     });
