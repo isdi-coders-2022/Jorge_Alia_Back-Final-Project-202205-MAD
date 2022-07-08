@@ -25,7 +25,6 @@ describe('Given the control error', () => {
 
         test('Then should be call next with error', async () => {
             User.findById = jest.fn().mockResolvedValueOnce({ _id: '2' });
-
             await userRequired(req as Request, resp as Response, next);
             expect(next).toHaveBeenCalled();
         });

@@ -16,7 +16,6 @@ export class BasicController<T> {
         next: NextFunction
     ) => {
         resp.setHeader('Content-type', 'application/json');
-        console.log(req.params.id);
         const result = await this.model.findById(req.params.id);
         if (result) {
             resp.send(JSON.stringify(result));

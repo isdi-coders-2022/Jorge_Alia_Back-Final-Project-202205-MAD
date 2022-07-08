@@ -7,7 +7,7 @@ import { userRequired } from '../middleware/user.required.js';
 export const userController = new UserController(User);
 export const userRouter = Router();
 
-userRouter.get('/', userController.getAllController);
+userRouter.get('/', loginRequired, userController.getAllController);
 userRouter.get('/:id', loginRequired, userController.getController);
 userRouter.post('/register', userController.registerController);
 userRouter.post('/login', userController.loginController);
