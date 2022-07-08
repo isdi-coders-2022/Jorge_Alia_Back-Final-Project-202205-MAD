@@ -239,3 +239,20 @@ describe('Given the routes of workout', () => {
         });
     });
 });
+
+describe('Given the routes of search', () => {
+    describe('When method GET is used in "/search" route', () => {
+        test(' then status should be 201', async () => {
+            const search = 'brazo';
+            const response = await request(app).get(`/search/?q=${search}`);
+            expect(response.statusCode).toBe(201);
+        });
+    });
+    describe('When method GET is used in "/search" route', () => {
+        test(' then status should be 201', async () => {
+            const search = 'pierna';
+            const response = await request(app).get(`/search/?q=${search}`);
+            expect(response.statusCode).toBe(201);
+        });
+    });
+});

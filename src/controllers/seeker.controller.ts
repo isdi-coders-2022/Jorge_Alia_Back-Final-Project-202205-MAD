@@ -7,7 +7,7 @@ export class SeekerController {
             title: { $regex: req.query.q, $options: 'i' },
         });
         resp.setHeader('Content-type', 'application/json');
-        resp.status(202);
+        resp.status(201);
         resp.send(JSON.stringify(seeker));
     };
 }
