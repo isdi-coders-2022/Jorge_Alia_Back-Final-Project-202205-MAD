@@ -22,4 +22,4 @@ workoutRouter.patch(
 
 // CREAR Y ACTUALIZAR WORKOUT QUE NO VOY A DAR OPCIÓN AL USUARIO PERO MIENTRAS DESRROLLO LOS PUEDO NECESITAR
 // workoutRouter.patch('/:id', workoutController.patchController);
-// workoutRouter.post('/', workoutController.postController);
+workoutRouter.post('/', loginRequired, workoutController.postController);

@@ -9,9 +9,6 @@ export const userRequired = async (
 ) => {
     const userID = (req as unknown as ExtRequest).tokenPayload.id;
     const findUser = await User.findById(req.params.id);
-    console.log(userID);
-    console.log(findUser);
-
     if (String(findUser?._id) === String(userID)) {
         next();
     } else {

@@ -31,7 +31,6 @@ describe('Given the control error', () => {
         test('If i do not send a good token, then should be call with tokenError', async () => {
             new Error('token missing or invalid');
             req.get = jest.fn().mockReturnValue('bearer');
-
             await loginRequired(req as Request, resp as Response, next);
             expect(next).toHaveBeenCalled();
         });
