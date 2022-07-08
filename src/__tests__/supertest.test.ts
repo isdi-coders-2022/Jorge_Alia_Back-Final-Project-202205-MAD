@@ -43,7 +43,6 @@ describe('Given the routes of user', () => {
                 .send(enterUser);
             tokenUser = response.body.token;
             idUser = response.body.id;
-            console.log(tokenUser);
             expect(response.statusCode).toBe(201);
         });
     });
