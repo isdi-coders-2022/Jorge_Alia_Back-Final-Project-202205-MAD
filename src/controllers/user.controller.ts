@@ -62,9 +62,11 @@ export class UserController<T> extends BasicController<T> {
         resp: Response,
         next: NextFunction
     ) => {
-        const findUser: any = await this.model.findOne({
-            email: req.body.email,
-        });
+        const findUser: any = await this.model
+            .findOne({
+                email: req.body.email,
+            })
+            .populate('workouts');
 
         if (!findUser || !aut.compare(req.body.passwd, findUser.passwd)) {
             const error = new Error('Invalid user or password');
