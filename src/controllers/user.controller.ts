@@ -62,9 +62,12 @@ export class UserController<T> extends BasicController<T> {
         resp: Response,
         next: NextFunction
     ) => {
-        const findUser: any = await this.model.findOne({
-            email: req.body.email,
-        });
+        const findUser: any = await this.model
+            .findOne({
+                email: req.body.email,
+            })
+            .populate('workouts');
+
         if (!findUser || !aut.compare(req.body.passwd, findUser.passwd)) {
             const error = new Error('Invalid user or password');
             error.name = 'UserAuthorizationError';
@@ -78,7 +81,7 @@ export class UserController<T> extends BasicController<T> {
         const token = aut.createToken(tokenPayLoad);
         resp.setHeader('Content-type', 'application/json');
         resp.status(201);
-        resp.send(JSON.stringify({ token, id: findUser.id }));
+        resp.send(JSON.stringify({ token, user: findUser }));
     };
     addWorkoutController = async (
         req: Request,
