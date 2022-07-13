@@ -89,7 +89,6 @@ describe('Given the routes of user', () => {
                 .set('Authorization', 'Bearer ' + tokenUser)
                 .send(newWorkoutUser);
             newWorkoutId = response.body._id;
-            console.log(newWorkoutId, 'JESUUUUUSU');
             expect(response.statusCode).toBe(201);
         });
     });

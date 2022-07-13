@@ -24,7 +24,8 @@ describe('Given a instantiated controller UserController', () => {
         create: jest.fn(),
         findByIdAndUpdate: jest.fn(),
         findByIdAndDelete: jest.fn(),
-        findOne: jest.fn().mockResolvedValue({
+        findOne: jest.fn().mockReturnValue({
+            populate: jest.fn(),
             workouts: [
                 {
                     _id: '62c3fa970a6339f727766546',
