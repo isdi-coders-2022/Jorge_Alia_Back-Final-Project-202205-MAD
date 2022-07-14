@@ -10,7 +10,7 @@ export const encrypt = async (source: string, salt = 10) => {
 };
 
 export const compare = async (value: string, hash: string) => {
-    await bcrypt.compare(value, hash);
+    return await bcrypt.compare(value, hash);
 };
 
 export const createToken = (tokenPayLoad: iTokenPayload) => {
