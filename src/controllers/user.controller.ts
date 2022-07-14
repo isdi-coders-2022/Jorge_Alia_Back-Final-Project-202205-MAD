@@ -101,13 +101,17 @@ export class UserController<T> extends BasicController<T> {
                 .findOne({
                     id,
                 })
-                .populate('workouts')) as HydratedDocument<iUser>;
+                .populate('workouts')
+                .populate('done')) as HydratedDocument<iUser>;
+            console.log(findUser, 'FIIIIND USER');
             if (findUser === null) {
                 next('UserError');
                 return;
             }
             if (
-                findUser.workouts.some((item) => item.toString() === idWorkout)
+                findUser.workouts.some(
+                    (item: any) => item._id.toString() === idWorkout
+                )
             ) {
                 const error = new Error('Workout already added to favorites');
                 error.name = 'ValidationError';
@@ -151,26 +155,37 @@ export class UserController<T> extends BasicController<T> {
         resp: Response,
         next: NextFunction
     ) => {
-        const idWorkout = req.params.id;
-        const { id } = (req as ExtRequest).tokenPayload;
-        const findUser: HydratedDocument<iUser> = (await this.model.findOne({
-            id,
-        })) as HydratedDocument<iUser>;
-        if (findUser === null) {
-            next('UserError');
-            return;
-        }
+        try {
+            const idWorkout = req.params.id;
+            const { id } = (req as ExtRequest).tokenPayload;
+            const findUser: HydratedDocument<iUser> = (await this.model
+                .findOne({
+                    id,
+                })
+                .populate('done')
+                .populate('workouts')) as HydratedDocument<iUser>;
+            if (findUser === null) {
+                next('UserError');
+                return;
+            }
 
-        if (findUser.done.some((item) => item.toString() === idWorkout)) {
-            const error = new Error('Workout already done');
-            error.name = 'ValidationError';
-            next(error);
-        } else {
-            findUser.done.push(idWorkout);
-            findUser.save();
-            resp.setHeader('Content-type', 'application/json');
-            resp.status(201);
-            resp.send(JSON.stringify(findUser));
+            if (
+                findUser.done.some(
+                    (item: any) => item._id.toString() === idWorkout
+                )
+            ) {
+                const error = new Error('Workout already done');
+                error.name = 'ValidationError';
+                next(error);
+            } else {
+                findUser.done.push(idWorkout);
+                findUser.save();
+                resp.setHeader('Content-type', 'application/json');
+                resp.status(201);
+                resp.send(JSON.stringify(findUser));
+            }
+        } catch (error) {
+            next('RangeError');
         }
     };
     deleteDoneController = async (

@@ -29,6 +29,7 @@ describe('Given the routes of user', () => {
             const response = await request(app)
                 .post('/user/register')
                 .send(newUser);
+            idUser = response.body._id;
             expect(response.statusCode).toBe(201);
         });
     });
@@ -42,7 +43,6 @@ describe('Given the routes of user', () => {
                 .post('/user/login')
                 .send(enterUser);
             tokenUser = response.body.token;
-            idUser = response.body.id;
             expect(response.statusCode).toBe(201);
         });
     });
@@ -137,6 +137,8 @@ describe('Given the routes of user', () => {
     });
     describe('When method PATCH is used in "/user/deletefromdone/', () => {
         test('If I am logged, then status should be 201', async () => {
+            console.log(newWorkoutId, 'ID ENTREMANITGNJEOKSGKHO');
+            console.log(tokenUser, 'TOKEEEN');
             const response = await request(app)
                 .patch(`/user/deletefromdone/${newWorkoutId}`)
                 .set('Authorization', 'Bearer ' + tokenUser);
