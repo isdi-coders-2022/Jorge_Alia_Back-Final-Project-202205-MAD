@@ -112,6 +112,7 @@ export class UserController<T> extends BasicController<T> {
                     (item: any) => item._id.toString() === idWorkout
                 )
             ) {
+                resp.send(JSON.stringify(findUser));
                 const error = new Error('Workout already added to favorites');
                 error.name = 'ValidationError';
                 next(error);
@@ -160,7 +161,7 @@ export class UserController<T> extends BasicController<T> {
         try {
             const idWorkout = req.params.id;
             const { id } = (req as ExtRequest).tokenPayload;
-            const findUser: HydratedDocument<iUser> = (await this.model
+            let findUser: HydratedDocument<iUser> = (await this.model
                 .findOne({
                     id,
                 })
@@ -170,18 +171,19 @@ export class UserController<T> extends BasicController<T> {
                 next('UserError');
                 return;
             }
-
             if (
                 findUser.done.some(
                     (item: any) => item._id.toString() === idWorkout
                 )
             ) {
+                resp.send(JSON.stringify(findUser));
                 const error = new Error('Workout already done');
                 error.name = 'ValidationError';
                 next(error);
             } else {
                 findUser.done.push(idWorkout);
-                findUser.save();
+                findUser = await (await findUser.save()).populate('done');
+
                 resp.setHeader('Content-type', 'application/json');
                 resp.status(201);
                 resp.send(JSON.stringify(findUser));
