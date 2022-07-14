@@ -97,7 +97,7 @@ export class UserController<T> extends BasicController<T> {
             const idWorkout = req.params.id;
             const { id } = (req as ExtRequest).tokenPayload;
 
-            const findUser: HydratedDocument<iUser> = (await this.model
+            let findUser: HydratedDocument<iUser> = (await this.model
                 .findOne({
                     id,
                 })
@@ -117,7 +117,7 @@ export class UserController<T> extends BasicController<T> {
                 next(error);
             } else {
                 findUser.workouts.push(idWorkout);
-                findUser.save();
+                findUser = await (await findUser.save()).populate('workouts');
                 resp.setHeader('Content-type', 'application/json');
                 resp.status(201);
                 resp.send(JSON.stringify(findUser));
@@ -134,15 +134,18 @@ export class UserController<T> extends BasicController<T> {
     ) => {
         const idWorkout = req.params.id;
         const { id } = (req as ExtRequest).tokenPayload;
-        const findUser: HydratedDocument<iUser> = (await this.model.findOne({
-            id,
-        })) as HydratedDocument<iUser>;
+        const findUser: HydratedDocument<iUser> = (await this.model
+            .findOne({
+                id,
+            })
+            .populate('workouts')
+            .populate('done')) as HydratedDocument<iUser>;
         if (findUser === null) {
             next('UserError');
             return;
         }
         findUser.workouts = findUser.workouts.filter(
-            (item: any) => item.toString() !== idWorkout
+            (item: any) => item._id.toString() !== idWorkout
         );
         findUser.save();
         resp.setHeader('Content-type', 'application/json');
