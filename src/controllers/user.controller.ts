@@ -103,7 +103,6 @@ export class UserController<T> extends BasicController<T> {
                 })
                 .populate('workouts')
                 .populate('done')) as HydratedDocument<iUser>;
-            console.log(findUser, 'FIIIIND USER');
             if (findUser === null) {
                 next('UserError');
                 return;
