@@ -162,7 +162,9 @@ describe('Given a instantiated controller UserController', () => {
             const mockResult = {
                 id: '62b5d4943bc55ff0124f6c1e',
                 workouts: [],
-                save: jest.fn(),
+                save: jest.fn().mockReturnValue({
+                    populate: jest.fn(),
+                }),
             };
 
             (mockModel.findOne as jest.Mock).mockReturnValueOnce({
@@ -239,6 +241,26 @@ describe('Given a instantiated controller UserController', () => {
     });
     describe('When method deleteWorkoutController is called', () => {
         test('And response is ok, then resp.send should be called', async () => {
+            req = {
+                params: { id: '62b5d4943bc55ff0124f6c1d' },
+                tokenPayload: {
+                    id: '62b9e534a202c8a096e0d7ba',
+                },
+            };
+
+            const mockResult = {
+                id: '62b5d4943bc55ff0124f6c1e',
+                workouts: [{ _id: '62b5d4943bc55ff0124f6c1d' }],
+                save: jest.fn().mockReturnValue({
+                    populate: jest.fn(),
+                }),
+            };
+            (mockModel.findOne as jest.Mock).mockReturnValueOnce({
+                populate: jest.fn().mockReturnValue({
+                    populate: jest.fn().mockResolvedValue(mockResult),
+                }),
+            });
+
             await controller.deleteWorkoutController(
                 req as Request,
                 resp as Response,
@@ -247,7 +269,12 @@ describe('Given a instantiated controller UserController', () => {
             expect(resp.send).toHaveBeenCalled();
         });
         test('And response is not ok, then next should be called', async () => {
-            mockModel.findOne.mockResolvedValueOnce(null);
+            const mockResult = null;
+            (mockModel.findOne as jest.Mock).mockReturnValueOnce({
+                populate: jest.fn().mockReturnValue({
+                    populate: jest.fn().mockResolvedValue(mockResult),
+                }),
+            });
             await controller.deleteWorkoutController(
                 req as Request,
                 resp as Response,
@@ -267,8 +294,11 @@ describe('Given a instantiated controller UserController', () => {
             const mockResult = {
                 id: '62b5d4943bc55ff0124f6c1e',
                 done: [],
-                save: jest.fn(),
+                save: jest.fn().mockReturnValue({
+                    populate: jest.fn(),
+                }),
             };
+
             (mockModel.findOne as jest.Mock).mockReturnValueOnce({
                 populate: jest.fn().mockReturnValue({
                     populate: jest.fn().mockResolvedValue(mockResult),
