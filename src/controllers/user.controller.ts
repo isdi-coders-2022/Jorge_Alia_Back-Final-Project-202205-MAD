@@ -98,9 +98,7 @@ export class UserController<T> extends BasicController<T> {
             const { id } = (req as ExtRequest).tokenPayload;
 
             let findUser: HydratedDocument<iUser> = (await this.model
-                .findOne({
-                    id,
-                })
+                .findById(id)
                 .populate('workouts')
                 .populate('done')) as HydratedDocument<iUser>;
             if (findUser === null) {
@@ -112,10 +110,10 @@ export class UserController<T> extends BasicController<T> {
                     (item: any) => item._id.toString() === idWorkout
                 )
             ) {
-                resp.send(JSON.stringify(findUser));
                 const error = new Error('Workout already added to favorites');
                 error.name = 'ValidationError';
                 next(error);
+                return;
             } else {
                 findUser.workouts.push(idWorkout);
                 findUser = await (await findUser.save()).populate('workouts');
@@ -136,9 +134,7 @@ export class UserController<T> extends BasicController<T> {
         const idWorkout = req.params.id;
         const { id } = (req as ExtRequest).tokenPayload;
         const findUser: HydratedDocument<iUser> = (await this.model
-            .findOne({
-                id,
-            })
+            .findById(id)
             .populate('workouts')
             .populate('done')) as HydratedDocument<iUser>;
         if (findUser === null) {
@@ -162,9 +158,7 @@ export class UserController<T> extends BasicController<T> {
             const idWorkout = req.params.id;
             const { id } = (req as ExtRequest).tokenPayload;
             let findUser: HydratedDocument<iUser> = (await this.model
-                .findOne({
-                    id,
-                })
+                .findById(id)
                 .populate('done')
                 .populate('workouts')) as HydratedDocument<iUser>;
             if (findUser === null) {
@@ -199,9 +193,11 @@ export class UserController<T> extends BasicController<T> {
     ) => {
         const idWorkout = req.params.id;
         const { id } = (req as ExtRequest).tokenPayload;
-        const findUser: HydratedDocument<iUser> = (await this.model.findOne({
-            id,
-        })) as HydratedDocument<iUser>;
+        const findUser: HydratedDocument<iUser> = (await this.model
+            .findById(id)
+            .populate('done')
+            .populate('workouts')) as HydratedDocument<iUser>;
+
         if (findUser === null) {
             next('UserError');
             return;
