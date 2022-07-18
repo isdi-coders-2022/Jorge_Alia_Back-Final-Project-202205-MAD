@@ -40,6 +40,32 @@ export class UserController<T> extends BasicController<T> {
             resp.send(JSON.stringify({}));
         }
     };
+    getControllerByToken = async (
+        req: Request,
+        resp: Response,
+        next: NextFunction
+    ) => {
+        resp.setHeader('Content-type', 'application/json');
+        let user;
+        req as ExtRequest;
+        console.log((req as ExtRequest).tokenPayload, 'soy un token');
+        try {
+            user = await this.model
+                .findById((req as ExtRequest).tokenPayload.id)
+                .populate('workouts')
+                .populate('done');
+        } catch (error) {
+            next(error);
+            return;
+        }
+
+        if (user) {
+            resp.send(JSON.stringify(user));
+        } else {
+            resp.status(404);
+            resp.send(JSON.stringify({}));
+        }
+    };
 
     registerController = async (
         req: Request,
