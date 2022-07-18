@@ -127,7 +127,7 @@ describe('Given a instantiated controller UserController', () => {
             expect(next).toHaveBeenCalled();
         });
     });
-    describe('When method getController is getControllerByToken', () => {
+    describe('When method getControllerByToken is called', () => {
         test('Then should be call rest.status with 404', async () => {
             (mockModel.findById as jest.Mock).mockReturnValueOnce({
                 populate: jest.fn().mockReturnValue({

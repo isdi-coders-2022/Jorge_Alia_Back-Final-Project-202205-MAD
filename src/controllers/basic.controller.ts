@@ -48,7 +48,8 @@ export class BasicController<T> {
         try {
             const newItem = await this.model.findByIdAndUpdate(
                 req.params.id,
-                req.body
+                req.body,
+                { new: true }
             );
             resp.setHeader('Content-type', 'application/json');
             resp.send(JSON.stringify(newItem));
