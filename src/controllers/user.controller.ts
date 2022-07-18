@@ -67,24 +67,6 @@ export class UserController<T> extends BasicController<T> {
         }
     };
 
-    registerController = async (
-        req: Request,
-        resp: Response,
-        next: NextFunction
-    ) => {
-        let newItem: HydratedDocument<any>;
-
-        try {
-            req.body.passwd = await aut.encrypt(req.body.passwd);
-            newItem = await this.model.create(req.body);
-            resp.setHeader('Content-type', 'application/json');
-            resp.status(201);
-            resp.send(JSON.stringify(newItem));
-        } catch (error) {
-            next(RangeError);
-        }
-    };
-
     loginController = async (
         req: Request,
         resp: Response,
@@ -113,6 +95,24 @@ export class UserController<T> extends BasicController<T> {
         resp.setHeader('Content-type', 'application/json');
         resp.status(201);
         resp.send(JSON.stringify({ token, user: findUser }));
+    };
+
+    registerController = async (
+        req: Request,
+        resp: Response,
+        next: NextFunction
+    ) => {
+        let newItem: HydratedDocument<any>;
+
+        try {
+            req.body.passwd = await aut.encrypt(req.body.passwd);
+            newItem = await this.model.create(req.body);
+            resp.setHeader('Content-type', 'application/json');
+            resp.status(201);
+            resp.send(JSON.stringify(newItem));
+        } catch (error) {
+            next(RangeError);
+        }
     };
     addWorkoutController = async (
         req: Request,
