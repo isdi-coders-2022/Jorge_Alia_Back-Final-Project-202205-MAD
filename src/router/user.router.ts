@@ -9,6 +9,11 @@ export const userRouter = Router();
 
 userRouter.get('/', loginRequired, userController.getAllController);
 userRouter.get('/:id', loginRequired, userController.getController);
+userRouter.post(
+    '/loginWithToken',
+    loginRequired,
+    userController.getControllerByToken
+);
 userRouter.post('/register', userController.registerController);
 userRouter.post('/login', userController.loginController);
 userRouter.patch(

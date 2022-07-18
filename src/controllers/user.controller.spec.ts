@@ -127,7 +127,60 @@ describe('Given a instantiated controller UserController', () => {
             expect(next).toHaveBeenCalled();
         });
     });
+    describe('When method getController is getControllerByToken', () => {
+        test('Then should be call rest.status with 404', async () => {
+            (mockModel.findById as jest.Mock).mockReturnValueOnce({
+                populate: jest.fn().mockReturnValue({
+                    populate: jest.fn().mockResolvedValue(undefined),
+                }),
+            });
 
+            await controller.getControllerByToken(
+                req as Request,
+                resp as Response,
+                next as NextFunction
+            );
+
+            expect(resp.status).toHaveBeenCalledWith(404);
+        });
+        test('Then resp.send should be called', async () => {
+            req = {
+                params: { id: '62b5d4943bc55ff0124f6c1d' },
+                tokenPayload: {
+                    id: '62b9e534a202c8a096e0d7ba',
+                },
+            };
+            const mockResult = {
+                id: '62b5d4943bc55ff0124f6c1e',
+                workouts: [],
+                save: jest.fn().mockReturnValue({
+                    populate: jest.fn(),
+                }),
+            };
+            (mockModel.findById as jest.Mock).mockReturnValueOnce({
+                populate: jest.fn().mockReturnValue({
+                    populate: jest.fn().mockResolvedValue(mockResult),
+                }),
+            });
+
+            await controller.getControllerByToken(
+                req as Request,
+                resp as Response,
+                next as NextFunction
+            );
+
+            expect(resp.send).toHaveBeenCalled();
+        });
+        test('Then resp.next should be called', async () => {
+            await controller.getControllerByToken(
+                req as Request,
+                resp as Response,
+                next as NextFunction
+            );
+
+            expect(next).toHaveBeenCalled();
+        });
+    });
     describe('When method registerController is called', () => {
         test('Then if not error resp.send should be called with data', async () => {
             const mockResult = { test: 'test' };
