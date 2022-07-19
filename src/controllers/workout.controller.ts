@@ -49,23 +49,34 @@ export class WorkoutController<T> extends BasicController<T> {
     ) => {
         const idWorkout = req.params.id;
         const { id } = (req as ExtRequest).tokenPayload;
-        try {
-            const { text, score } = req.body;
-            const findWorkout: HydratedDocument<iWorkout> =
-                (await this.model.findOne({
-                    id: idWorkout,
-                })) as HydratedDocument<iWorkout>;
-            if (findWorkout === null) {
-                next('UserError');
-            }
-            findWorkout.comments.push({ text, user: id, score: score });
-            findWorkout.save();
-            resp.setHeader('Content-type', 'application/json');
-            resp.status(201);
-            resp.send(JSON.stringify(findWorkout));
-        } catch (error) {
-            next('ValidationError');
+
+        const { text, score } = req.body;
+
+        const findWorkout: HydratedDocument<iWorkout> = (await this.model
+            .findById(idWorkout)
+            .populate({
+                path: 'comments',
+                populate: {
+                    path: 'user',
+                    model: 'User',
+                    select: {
+                        email: 0,
+                        workouts: 0,
+                        done: 0,
+                        rol: 0,
+                    },
+                },
+            })) as HydratedDocument<iWorkout>;
+
+        if (findWorkout === null) {
+            next('UserError');
+            return;
         }
+        findWorkout.comments.push({ text, user: id, score: score });
+        findWorkout.save();
+        resp.setHeader('Content-type', 'application/json');
+        resp.status(201);
+        resp.send(JSON.stringify(findWorkout));
     };
 
     deleteCommentController = async (
@@ -76,10 +87,20 @@ export class WorkoutController<T> extends BasicController<T> {
         const idWorkout = req.params.id;
         const idComment = req.body.commentId;
         const { id } = (req as ExtRequest).tokenPayload;
-
-        const findWorkout: HydratedDocument<iWorkout> =
-            (await this.model.findOne({
-                id: idWorkout,
+        const findWorkout: HydratedDocument<iWorkout> = (await this.model
+            .findById(idWorkout)
+            .populate({
+                path: 'comments',
+                populate: {
+                    path: 'user',
+                    model: 'User',
+                    select: {
+                        email: 0,
+                        workouts: 0,
+                        done: 0,
+                        rol: 0,
+                    },
+                },
             })) as HydratedDocument<iWorkout>;
 
         if (findWorkout === null) {

@@ -48,7 +48,6 @@ export class UserController<T> extends BasicController<T> {
         resp.setHeader('Content-type', 'application/json');
         let user;
         req as ExtRequest;
-        console.log((req as ExtRequest).tokenPayload, 'soy un token');
         try {
             user = await this.model
                 .findById((req as ExtRequest).tokenPayload.id)
