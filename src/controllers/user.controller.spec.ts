@@ -184,7 +184,7 @@ describe('Given a instantiated controller UserController', () => {
     describe('When method registerController is called', () => {
         test('Then if not error resp.send should be called with data', async () => {
             const mockResult = { test: 'test' };
-            req = { body: { pwd: 'test' } };
+            req = { body: { pwd: 'test-2022' } };
             (mockModel.create as jest.Mock).mockResolvedValueOnce(mockResult);
             await controller.registerController(
                 req as Request,
@@ -194,7 +194,7 @@ describe('Given a instantiated controller UserController', () => {
             expect(resp.send).toHaveBeenCalledWith(JSON.stringify(mockResult));
         });
         test('Then if error next  should be called ', async () => {
-            req = { body: { pwd: 'test' } };
+            req = { body: { pwd: 'test-2022' } };
             (mockModel.create as jest.Mock).mockRejectedValueOnce(undefined);
             await controller.registerController(
                 req as Request,
@@ -395,7 +395,7 @@ describe('Given a instantiated controller UserController', () => {
             );
             expect(next).toHaveBeenCalled();
         });
-        test('Next it should be called, when the workout alreadyadded to favorites ', async () => {
+        test('Next it should be called, when the workout already added to favorites ', async () => {
             req = {
                 params: { id: '62b5d4943bc55ff0124f6c1d' },
                 tokenPayload: {

@@ -24,7 +24,7 @@ describe('Given the routes of user', () => {
             const newUser = {
                 name: 'sergio',
                 email: 'sergio@gmail.com',
-                passwd: '12345',
+                passwd: '12kdc88c5',
             };
             const response = await request(app)
                 .post('/user/register')
@@ -37,7 +37,7 @@ describe('Given the routes of user', () => {
         test('Then status should be 201', async () => {
             const enterUser = {
                 email: 'sergio@gmail.com',
-                passwd: '12345',
+                passwd: '12kdc88c5',
             };
             const response = await request(app)
                 .post('/user/login')
